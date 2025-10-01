@@ -52,17 +52,15 @@
         }
         
         .section-title {
-            font-size: 20px;
+            font-size: 22px; /* 增大副标题字体 */
             color: #4a90e2;
             margin: 25px 0 15px 0;
             padding-bottom: 8px;
             border-bottom: 2px solid #eaeaea;
         }
         
-        .description {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
+        .country-title {
+            margin-top: 35px; /* 增加与上面模块的间距 */
         }
         
         .input-group {
@@ -274,33 +272,10 @@
         }
         
         /* 免签国家查询样式 */
-        .country-search-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .show-all-countries {
-            background-color: #f0f0f0; /* 灰色背景 */
-            color: #333; /* 黑色文字 */
-            border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            white-space: nowrap;
-        }
-        
-        .show-all-countries:hover {
-            background-color: #e0e0e0;
-        }
-        
         .country-search-container {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .country-search-container input {
@@ -309,7 +284,7 @@
         
         .country-search-container button {
             flex: 0 0 auto;
-            background-color: #7bb0ee; /* 使用停留天数快捷键的蓝色 */
+            background-color: #7bb0ee;
             color: white;
             border: none;
             border-radius: 6px;
@@ -320,6 +295,26 @@
         
         .country-search-container button:hover {
             background-color: #6ba0de;
+        }
+        
+        .show-all-container {
+            text-align: right;
+            margin-bottom: 15px;
+        }
+        
+        .show-all-countries {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .show-all-countries:hover {
+            background-color: #e0e0e0;
         }
         
         .country-results {
@@ -356,9 +351,9 @@
         }
         
         .country-code {
-            color: #4a90e2; /* 蓝色 */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 使用更圆润的字体 */
-            background-color: #f0f7ff; /* 浅蓝色背景 */
+            color: #4a90e2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f7ff;
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: 600;
@@ -388,11 +383,7 @@
         </h1>
         
         <!-- 日期计算部分 -->
-        <div class="section-title">日期计算</div>
-        <div class="description">
-            输入入境日期和停留天数，计算出入境有效期<br>
-            <small>（停留天数对应到第N+1天的日期）</small>
-        </div>
+        <div class="section-title">入境有效期计算</div>
         
         <div class="input-group">
             <label for="startDate">入境日期</label>
@@ -442,18 +433,17 @@
         </div>
         
         <!-- 免签国家查询部分 -->
-        <div class="section-title">免签国家查询（76）</div>
+        <div class="section-title country-title">免签国家查询（76）</div>
         
-        <!-- 描述和显示全部按钮在同一行 -->
-        <div class="country-search-header">
-            <div class="description">输入国家名称或代码进行查询</div>
-            <button class="show-all-countries" id="showAllBtn">显示全部免签国家</button>
-        </div>
-        
-        <!-- 搜索框和查找按钮单独一行 -->
+        <!-- 搜索框和查找按钮作为主要功能 -->
         <div class="country-search-container">
             <input type="text" id="countrySearch" placeholder="输入国家名称或代码，如：泰国 或 THA">
             <button id="searchBtn">查找</button>
+        </div>
+        
+        <!-- 显示全部按钮作为附属功能 -->
+        <div class="show-all-container">
+            <button class="show-all-countries" id="showAllBtn">显示全部免签国家</button>
         </div>
         
         <div class="country-results" id="countryResults">
@@ -588,6 +578,9 @@
                     return `${year}-${month}-${day}`;
                 }
             }
+            
+            // 初始化计数显示
+            setTodayDate();
             
             // 设置今天按钮点击事件
             todayBtn.addEventListener('click', setTodayDate);
@@ -732,9 +725,6 @@
                     <div>（有效期至，从 ${formatDate(startDate, 'slash')} 起算 ${daysToAddValue} 天）</div>
                 `;
             }
-            
-            // 设置默认日期为今天
-            setTodayDate();
             
             // 显示国家列表函数
             function displayCountries(countryList) {
