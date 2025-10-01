@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日期计算器 By Alan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+        }
+        
+        .title-main {
+            font-size: 28px;
+        }
+        
+        .title-by {
+            font-size: 18px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .description {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .date-input-container {
+            position: relative;
+            display: flex;
+        }
+        
+        .date-input-container input[type="text"] {
+            flex: 1;
+            padding-right: 50px; /* 增加右侧空间以容纳图标 */
+        }
+        
+        .date-input-container input[type="date"] {
+            position: absolute;
+            right: 0;
+            width: 50px; /* 增加宽度确保可点击区域足够大 */
+            height: 100%;
+            opacity: 0.01; /* 使用非常低的透明度而不是完全透明 */
+            cursor: pointer;
+            z-index: 2; /* 确保日期选择器在图标上方 */
+        }
+        
+        .date-input-container::after {
+            content: "📅";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none; /* 确保图标不会干扰点击 */
+            font-size: 18px;
+            z-index: 1; /* 确保图标在日期选择器下方 */
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .result-group {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4a90e2;
+        }
+        
+        .result-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        
+        .result {
+            font-size: 22px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .calculate-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #3a7bc8;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .example {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        /* 计数窗口样式 - 集成到主界面 */
+        .counter-window {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .counter-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .counter-items {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .counter-item {
+            text-align: center;
+        }
+        
+        .counter-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .counter-value {
+            font-weight: 600;
+            color: #4a90e2;
+            font-size: 18px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .copyright {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        /* 新增样式 */
+        .result-details {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .quick-days {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .quick-day-btn {
+            flex: 1;
+            background-color: #7bb0ee; /* 降低饱和度后的蓝色 */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 600;
+        }
+        
+        .quick-day-btn:hover {
+            background-color: #6ba0de;
+        }
+        
+        .quick-day-btn.active {
+            background-color: #5b90ce;
+            box-shadow: 0 0 0 2px rgba(91, 144, 206, 0.3);
+        }
+        
+        .manual-input-container {
+            margin-top: 10px;
+        }
+        
+        .manual-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .manual-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .manual-input input {
+            flex: 1;
+        }
+        
+        .manual-input button {
+            flex: 0 0 auto;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .manual-input button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .date-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .today-btn {
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .today-btn:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主容器 -->
+    <div class="container">
+        <h1>
+            <span class="title-main">日期计算器</span>
+            <span class="title-by">By Alan</span>
+        </h1>
+        
+        <div class="description">
+            输入入境日期和停留天数，计算出入境有效期<br>
+            <small>（停留天数对应到第N+1天的日期）</small>
+        </div>
+        
+        <div class="input-group">
+            <label for="startDate">入境日期</label>
+            <div class="date-input-container">
+                <input type="text" id="startDate" placeholder="如：2023/10/01 或 2023-10-01">
+                <input type="date" id="startDatePicker" class="date-selector">
+            </div>
+            <div class="date-hint">支持格式：YYYY/MM/DD, YYYY-MM-DD, YYYY年MM月DD日</div>
+            <button class="today-btn" id="todayBtn">设为今天</button>
+            <div class="error" id="dateError">请输入有效的日期</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="daysToAdd">停留天数</label>
+            
+            <!-- 快捷天数按钮 -->
+            <div class="quick-days">
+                <button class="quick-day-btn" data-days="30">30天</button>
+                <button class="quick-day-btn" data-days="60">60天</button>
+                <button class="quick-day-btn" data-days="90">90天</button>
+                <button class="quick-day-btn" data-days="120">120天</button>
+                <button class="quick-day-btn" data-days="180">180天</button>
+            </div>
+            
+            <!-- 手动输入区域 -->
+            <div class="manual-input-container">
+                <span class="manual-label">手动输入</span>
+                <div class="manual-input">
+                    <input type="number" id="daysToAdd" min="1" placeholder="输入其他天数">
+                    <button id="manualCalculateBtn">计算</button>
+                </div>
+            </div>
+            
+            <div class="error" id="daysError">请输入有效的天数（≥1）</div>
+        </div>
+        
+        <div class="result-group">
+            <div class="result-label">计算结果</div>
+            <div class="result" id="result">请输入入境日期和停留天数进行计算</div>
+            <div class="result-details" id="resultDetails"></div>
+        </div>
+        
+        <div class="example">
+            <strong>示例：</strong><br>
+            入境日期：2023/10/01，停留天数：30<br>
+            计算结果：2023/10/31（有效期至）
+        </div>
+        
+        <!-- 计数窗口 - 集成到主界面 -->
+        <div class="counter-window">
+            <div class="counter-title">计算统计</div>
+            <div class="counter-items">
+                <div class="counter-item">
+                    <div class="counter-label">今日计算</div>
+                    <div class="counter-value" id="todayCount">0</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-label">总计计算</div>
+                    <div class="counter-value" id="totalCount">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="copyright">上海和平饭店©️2025</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const startDatePicker = document.getElementById('startDatePicker');
+            const daysToAddInput = document.getElementById('daysToAdd');
+            const manualCalculateBtn = document.getElementById('manualCalculateBtn');
+            const resultDiv = document.getElementById('result');
+            const resultDetails = document.getElementById('resultDetails');
+            const dateError = document.getElementById('dateError');
+            const daysError = document.getElementById('daysError');
+            const todayCountEl = document.getElementById('todayCount');
+            const totalCountEl = document.getElementById('totalCount');
+            const quickDayBtns = document.querySelectorAll('.quick-day-btn');
+            const todayBtn = document.getElementById('todayBtn');
+            
+            // 初始化计数数据
+            let todayCount = 0;
+            let totalCount = 0;
+            let today = new Date().toDateString();
+            let selectedQuickBtn = null;
+            
+            // 尝试从localStorage加载计数数据
+            try {
+                const savedData = localStorage.getItem('dateCalculatorCounts');
+                if (savedData) {
+                    const counts = JSON.parse(savedData);
+                    const savedToday = counts.date;
+                    
+                    // 如果是同一天，使用保存的数据
+                    if (savedToday === today) {
+                        todayCount = counts.todayCount;
+                        totalCount = counts.totalCount;
+                    } else {
+                        // 如果是新的一天，重置今日计数
+                        todayCount = 0;
+                        totalCount = counts.totalCount;
+                    }
+                }
+            } catch (e) {
+                console.log('无法加载计数数据，将重新开始计数');
+            }
+            
+            // 更新计数显示
+            function updateCountDisplay() {
+                todayCountEl.textContent = todayCount;
+                totalCountEl.textContent = totalCount;
+            }
+            
+            // 保存计数数据到localStorage
+            function saveCountData() {
+                const counts = {
+                    date: today,
+                    todayCount: todayCount,
+                    totalCount: totalCount
+                };
+                localStorage.setItem('dateCalculatorCounts', JSON.stringify(counts));
+            }
+            
+            // 设置默认日期为今天
+            function setTodayDate() {
+                const currentDate = new Date();
+                const formattedDate = formatDate(currentDate, 'slash');
+                startDateInput.value = formattedDate;
+                startDatePicker.value = currentDate.toISOString().split('T')[0];
+            }
+            
+            // 日期格式化函数
+            function formatDate(date, format = 'slash') {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                
+                if (format === 'slash') {
+                    return `${year}/${month}/${day}`;
+                } else {
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            
+            // 初始化计数显示
+            updateCountDisplay();
+            
+            // 设置今天按钮点击事件
+            todayBtn.addEventListener('click', setTodayDate);
+            
+            // 快捷按钮点击事件
+            quickDayBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除之前选中的按钮的active类
+                    if (selectedQuickBtn) {
+                        selectedQuickBtn.classList.remove('active');
+                    }
+                    
+                    // 设置当前按钮为选中状态
+                    this.classList.add('active');
+                    selectedQuickBtn = this;
+                    
+                    // 获取天数并计算
+                    const days = parseInt(this.getAttribute('data-days'));
+                    daysToAddInput.value = days;
+                    calculateDate();
+                });
+            });
+            
+            // 日期选择器变化事件
+            startDatePicker.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const formattedDate = formatDate(selectedDate, 'slash');
+                startDateInput.value = formattedDate;
+            });
+            
+            // 手动输入日期变化事件
+            startDateInput.addEventListener('change', function() {
+                const date = parseDate(this.value);
+                if (date && !isNaN(date.getTime())) {
+                    startDatePicker.value = formatDate(date, 'dash');
+                }
+            });
+            
+            // 手动计算按钮点击事件
+            manualCalculateBtn.addEventListener('click', function() {
+                // 移除快捷按钮的选中状态
+                if (selectedQuickBtn) {
+                    selectedQuickBtn.classList.remove('active');
+                    selectedQuickBtn = null;
+                }
+                calculateDate();
+            });
+            
+            // 手动输入框回车触发计算
+            daysToAddInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    // 移除快捷按钮的选中状态
+                    if (selectedQuickBtn) {
+                        selectedQuickBtn.classList.remove('active');
+                        selectedQuickBtn = null;
+                    }
+                    calculateDate();
+                }
+            });
+            
+            // 日期解析函数 - 支持多种格式
+            function parseDate(dateString) {
+                if (!dateString) return null;
+                
+                // 尝试直接解析
+                let date = new Date(dateString);
+                if (!isNaN(date.getTime())) {
+                    return date;
+                }
+                
+                // 尝试处理中文格式
+                const chinesePattern = /(\d{4})年(\d{1,2})月(\d{1,2})日/;
+                const chineseMatch = dateString.match(chinesePattern);
+                if (chineseMatch) {
+                    const year = parseInt(chineseMatch[1]);
+                    const month = parseInt(chineseMatch[2]) - 1; // 月份从0开始
+                    const day = parseInt(chineseMatch[3]);
+                    date = new Date(year, month, day);
+                    if (!isNaN(date.getTime())) {
+                        return date;
+                    }
+                }
+                
+                // 尝试处理YYYY-MM-DD或YYYY/MM/DD格式
+                const standardPattern = /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/;
+                const standardMatch = dateString.match(standardPattern);
+                if (standardMatch) {
+                    const year = parseInt(standardMatch[1]);
+                    const month = parseInt(standardMatch[2]) - 1; // 月份从0开始
+                    const day = parseInt(standardMatch[3]);
+                    date = new Date(year, month, day);
+                    if (!isNaN(date.getTime())) {
+                        return date;
+                    }
+                }
+                
+                return null;
+            }
+            
+            // 计算日期函数
+            function calculateDate() {
+                // 重置错误信息
+                dateError.style.display = 'none';
+                daysError.style.display = 'none';
+                
+                // 获取输入值
+                const startDateValue = startDateInput.value;
+                const daysToAddValue = parseInt(daysToAddInput.value);
+                
+                // 验证输入
+                let isValid = true;
+                
+                const startDate = parseDate(startDateValue);
+                if (!startDate || isNaN(startDate.getTime())) {
+                    dateError.style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (isNaN(daysToAddValue) || daysToAddValue < 1) {
+                    daysError.style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    resultDiv.textContent = '请修正输入错误';
+                    resultDetails.textContent = '';
+                    return;
+                }
+                
+                // 计算新日期（停留天数对应到第N+1天的日期）
+                const newDate = new Date(startDate);
+                newDate.setDate(startDate.getDate() + daysToAddValue);
+                
+                // 格式化日期显示
+                const formattedNewDate = formatDate(newDate, 'slash');
+                
+                // 显示结果
+                resultDiv.innerHTML = `<div>${formattedNewDate}</div>`;
+                
+                // 显示详细信息
+                resultDetails.innerHTML = `
+                    <div>（有效期至，从 ${formatDate(startDate, 'slash')} 起算 ${daysToAddValue} 天）</div>
+                `;
+                
+                // 更新计数
+                todayCount++;
+                totalCount++;
+                updateCountDisplay();
+                saveCountData();
+            }
+            
+            // 设置默认日期为今天
+            setTodayDate();
+        });
+    </script>
+</body>
+</html>
