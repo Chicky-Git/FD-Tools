@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日期计算器 By Alan</title>
+    <title>前台快捷工具 By Alan</title>
     <style>
         * {
             margin: 0;
@@ -27,7 +27,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             padding: 30px;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
         
         h1 {
@@ -51,10 +51,17 @@
             font-weight: 500;
         }
         
+        .section-title {
+            font-size: 20px;
+            color: #4a90e2;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
         .description {
             color: #666;
-            text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             line-height: 1.5;
         }
         
@@ -76,17 +83,17 @@
         
         .date-input-container input[type="text"] {
             flex: 1;
-            padding-right: 50px; /* 增加右侧空间以容纳图标 */
+            padding-right: 50px;
         }
         
         .date-input-container input[type="date"] {
             position: absolute;
             right: 0;
-            width: 50px; /* 增加宽度确保可点击区域足够大 */
+            width: 50px;
             height: 100%;
-            opacity: 0.01; /* 使用非常低的透明度而不是完全透明 */
+            opacity: 0.01;
             cursor: pointer;
-            z-index: 2; /* 确保日期选择器在图标上方 */
+            z-index: 2;
         }
         
         .date-input-container::after {
@@ -95,9 +102,9 @@
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            pointer-events: none; /* 确保图标不会干扰点击 */
+            pointer-events: none;
             font-size: 18px;
-            z-index: 1; /* 确保图标在日期选择器下方 */
+            z-index: 1;
         }
         
         input {
@@ -168,65 +175,7 @@
             color: #555;
         }
         
-        /* 计数窗口样式 - 集成到主界面 */
-        .counter-window {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .counter-title {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .counter-items {
-            display: flex;
-            justify-content: space-around;
-        }
-        
-        .counter-item {
-            text-align: center;
-        }
-        
-        .counter-label {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        
-        .counter-value {
-            font-weight: 600;
-            color: #4a90e2;
-            font-size: 18px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #777;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        
-        .copyright {
-            font-weight: 500;
-            color: #555;
-        }
-        
-        /* 新增样式 */
-        .result-details {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-        
+        /* 快捷天数按钮样式 */
         .quick-days {
             display: flex;
             gap: 8px;
@@ -235,7 +184,7 @@
         
         .quick-day-btn {
             flex: 1;
-            background-color: #7bb0ee; /* 降低饱和度后的蓝色 */
+            background-color: #7bb0ee;
             color: white;
             border: none;
             border-radius: 6px;
@@ -309,16 +258,137 @@
         .today-btn:hover {
             background-color: #e0e0e0;
         }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .copyright {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        /* 免签国家查询样式 */
+        .country-search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .show-all-countries {
+            background-color: #f0f0f0; /* 灰色背景 */
+            color: #333; /* 黑色文字 */
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+        
+        .show-all-countries:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .country-search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .country-search-container input {
+            flex: 1;
+        }
+        
+        .country-search-container button {
+            flex: 0 0 auto;
+            background-color: #7bb0ee; /* 使用停留天数快捷键的蓝色 */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .country-search-container button:hover {
+            background-color: #6ba0de;
+        }
+        
+        .country-results {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .country-results-header {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .country-item {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .country-item:last-child {
+            border-bottom: none;
+        }
+        
+        .country-name {
+            font-weight: 500;
+        }
+        
+        .country-code {
+            color: #4a90e2; /* 蓝色 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 使用更圆润的字体 */
+            background-color: #f0f7ff; /* 浅蓝色背景 */
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            border: 1px solid #c5d9f1;
+            font-size: 15px;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+        
+        .result-details {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <!-- 主容器 -->
     <div class="container">
         <h1>
-            <span class="title-main">日期计算器</span>
+            <span class="title-main">前台快捷工具</span>
             <span class="title-by">By Alan</span>
         </h1>
         
+        <!-- 日期计算部分 -->
+        <div class="section-title">日期计算</div>
         <div class="description">
             输入入境日期和停留天数，计算出入境有效期<br>
             <small>（停留天数对应到第N+1天的日期）</small>
@@ -371,19 +441,23 @@
             计算结果：2023/10/31（有效期至）
         </div>
         
-        <!-- 计数窗口 - 集成到主界面 -->
-        <div class="counter-window">
-            <div class="counter-title">计算统计</div>
-            <div class="counter-items">
-                <div class="counter-item">
-                    <div class="counter-label">今日计算</div>
-                    <div class="counter-value" id="todayCount">0</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-label">总计计算</div>
-                    <div class="counter-value" id="totalCount">0</div>
-                </div>
-            </div>
+        <!-- 免签国家查询部分 -->
+        <div class="section-title">免签国家查询（76）</div>
+        
+        <!-- 描述和显示全部按钮在同一行 -->
+        <div class="country-search-header">
+            <div class="description">输入国家名称或代码进行查询</div>
+            <button class="show-all-countries" id="showAllBtn">显示全部免签国家</button>
+        </div>
+        
+        <!-- 搜索框和查找按钮单独一行 -->
+        <div class="country-search-container">
+            <input type="text" id="countrySearch" placeholder="输入国家名称或代码，如：泰国 或 THA">
+            <button id="searchBtn">查找</button>
+        </div>
+        
+        <div class="country-results" id="countryResults">
+            <div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>
         </div>
         
         <div class="footer">
@@ -393,6 +467,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 日期计算相关元素
             const startDateInput = document.getElementById('startDate');
             const startDatePicker = document.getElementById('startDatePicker');
             const daysToAddInput = document.getElementById('daysToAdd');
@@ -401,53 +476,97 @@
             const resultDetails = document.getElementById('resultDetails');
             const dateError = document.getElementById('dateError');
             const daysError = document.getElementById('daysError');
-            const todayCountEl = document.getElementById('todayCount');
-            const totalCountEl = document.getElementById('totalCount');
             const quickDayBtns = document.querySelectorAll('.quick-day-btn');
             const todayBtn = document.getElementById('todayBtn');
             
-            // 初始化计数数据
-            let todayCount = 0;
-            let totalCount = 0;
-            let today = new Date().toDateString();
+            // 国家查询相关元素
+            const countrySearchInput = document.getElementById('countrySearch');
+            const searchBtn = document.getElementById('searchBtn');
+            const showAllBtn = document.getElementById('showAllBtn');
+            const countryResults = document.getElementById('countryResults');
+            
+            // 免签国家数据库
+            const countries = [
+                { name: "文莱", code: "BRN" },
+                { name: "法国", code: "FRA" },
+                { name: "德国", code: "DEU" },
+                { name: "意大利", code: "ITA" },
+                { name: "西班牙", code: "ESP" },
+                { name: "荷兰", code: "NLD" },
+                { name: "瑞士", code: "CHE" },
+                { name: "爱尔兰", code: "IRL" },
+                { name: "匈牙利", code: "HUN" },
+                { name: "奥地利", code: "AUT" },
+                { name: "比利时", code: "BEL" },
+                { name: "卢森堡", code: "LUX" },
+                { name: "新西兰", code: "NZL" },
+                { name: "澳大利亚", code: "AUS" },
+                { name: "波兰", code: "POL" },
+                { name: "葡萄牙", code: "PRT" },
+                { name: "希腊", code: "GRC" },
+                { name: "塞浦路斯", code: "CYP" },
+                { name: "斯洛文尼亚", code: "SVN" },
+                { name: "斯洛伐克", code: "SVK" },
+                { name: "挪威", code: "NOR" },
+                { name: "芬兰", code: "FIN" },
+                { name: "丹麦", code: "DNK" },
+                { name: "冰岛", code: "ISL" },
+                { name: "安道尔", code: "AND" },
+                { name: "摩纳哥", code: "MCO" },
+                { name: "列支敦士登", code: "LIE" },
+                { name: "韩国", code: "KOR" },
+                { name: "保加利亚", code: "BGR" },
+                { name: "罗马尼亚", code: "ROU" },
+                { name: "克罗地亚", code: "HRV" },
+                { name: "黑山", code: "MNE" },
+                { name: "北马其顿", code: "MKD" },
+                { name: "马耳他", code: "MLT" },
+                { name: "爱沙尼亚", code: "EST" },
+                { name: "拉脱维亚", code: "LVA" },
+                { name: "日本", code: "JPN" },
+                { name: "巴西", code: "BRA" },
+                { name: "阿根廷", code: "ARG" },
+                { name: "智利", code: "CHL" },
+                { name: "秘鲁", code: "PER" },
+                { name: "乌拉圭", code: "URY" },
+                { name: "沙特", code: "SAU" },
+                { name: "阿曼", code: "OMN" },
+                { name: "科威特", code: "KWT" },
+                { name: "巴林", code: "BHR" },
+                { name: "阿尔巴尼亚", code: "ALB" },
+                { name: "阿联酋", code: "ARE" },
+                { name: "安提瓜和巴布达", code: "ATG" },
+                { name: "巴巴多斯", code: "BRB" },
+                { name: "巴哈马", code: "BHS" },
+                { name: "白俄罗斯", code: "BLR" },
+                { name: "波黑", code: "BIH" },
+                { name: "多米尼克", code: "DMA" },
+                { name: "厄瓜多尔", code: "ECU" },
+                { name: "斐济", code: "FJI" },
+                { name: "格林纳达", code: "GRD" },
+                { name: "格鲁吉亚", code: "GEO" },
+                { name: "哈萨克斯坦", code: "KAZ" },
+                { name: "卡塔尔", code: "QAT" },
+                { name: "马尔代夫", code: "MDV" },
+                { name: "毛里求斯", code: "MUS" },
+                { name: "萨摩亚", code: "WSM" },
+                { name: "塞尔维亚", code: "SRB" },
+                { name: "塞舌尔", code: "SYC" },
+                { name: "圣马力诺", code: "SMR" },
+                { name: "苏里南", code: "SUR" },
+                { name: "所罗门群岛", code: "SLB" },
+                { name: "泰国", code: "THA" },
+                { name: "汤加", code: "TON" },
+                { name: "乌兹别克斯坦", code: "UZB" },
+                { name: "新加坡", code: "SGP" },
+                { name: "亚美尼亚", code: "ARM" },
+                { name: "阿塞拜疆", code: "AZE" },
+                { name: "马来西亚", code: "MYS" },
+                { name: "俄罗斯", code: "RUS" }
+            ];
+            
+            // 日期计算变量
             let selectedQuickBtn = null;
-            
-            // 尝试从localStorage加载计数数据
-            try {
-                const savedData = localStorage.getItem('dateCalculatorCounts');
-                if (savedData) {
-                    const counts = JSON.parse(savedData);
-                    const savedToday = counts.date;
-                    
-                    // 如果是同一天，使用保存的数据
-                    if (savedToday === today) {
-                        todayCount = counts.todayCount;
-                        totalCount = counts.totalCount;
-                    } else {
-                        // 如果是新的一天，重置今日计数
-                        todayCount = 0;
-                        totalCount = counts.totalCount;
-                    }
-                }
-            } catch (e) {
-                console.log('无法加载计数数据，将重新开始计数');
-            }
-            
-            // 更新计数显示
-            function updateCountDisplay() {
-                todayCountEl.textContent = todayCount;
-                totalCountEl.textContent = totalCount;
-            }
-            
-            // 保存计数数据到localStorage
-            function saveCountData() {
-                const counts = {
-                    date: today,
-                    todayCount: todayCount,
-                    totalCount: totalCount
-                };
-                localStorage.setItem('dateCalculatorCounts', JSON.stringify(counts));
-            }
             
             // 设置默认日期为今天
             function setTodayDate() {
@@ -469,9 +588,6 @@
                     return `${year}-${month}-${day}`;
                 }
             }
-            
-            // 初始化计数显示
-            updateCountDisplay();
             
             // 设置今天按钮点击事件
             todayBtn.addEventListener('click', setTodayDate);
@@ -615,16 +731,63 @@
                 resultDetails.innerHTML = `
                     <div>（有效期至，从 ${formatDate(startDate, 'slash')} 起算 ${daysToAddValue} 天）</div>
                 `;
-                
-                // 更新计数
-                todayCount++;
-                totalCount++;
-                updateCountDisplay();
-                saveCountData();
             }
             
             // 设置默认日期为今天
             setTodayDate();
+            
+            // 显示国家列表函数
+            function displayCountries(countryList) {
+                if (countryList.length === 0) {
+                    countryResults.innerHTML = '<div class="country-results-header">以下是搜索到的免签国家：</div><div class="no-results">未找到匹配的国家</div>';
+                } else {
+                    let resultsHTML = '<div class="country-results-header">以下是搜索到的免签国家：</div>';
+                    resultsHTML += countryList.map(country => 
+                        `<div class="country-item">
+                            <span class="country-name">${country.name}</span>
+                            <span class="country-code">${country.code}</span>
+                        </div>`
+                    ).join('');
+                    countryResults.innerHTML = resultsHTML;
+                }
+            }
+            
+            // 国家查询功能
+            function searchCountries() {
+                const searchTerm = countrySearchInput.value.trim().toLowerCase();
+                
+                if (!searchTerm) {
+                    countryResults.innerHTML = '<div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>';
+                    return;
+                }
+                
+                // 搜索匹配的国家
+                const matchedCountries = countries.filter(country => 
+                    country.name.toLowerCase().includes(searchTerm) || 
+                    country.code.toLowerCase().includes(searchTerm)
+                );
+                
+                // 显示结果
+                displayCountries(matchedCountries);
+            }
+            
+            // 显示全部国家
+            function showAllCountries() {
+                displayCountries(countries);
+            }
+            
+            // 搜索按钮点击事件
+            searchBtn.addEventListener('click', searchCountries);
+            
+            // 显示全部按钮点击事件
+            showAllBtn.addEventListener('click', showAllCountries);
+            
+            // 搜索框回车事件
+            countrySearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchCountries();
+                }
+            });
         });
     </script>
 </body>
