@@ -1,785 +1,221 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>前台快捷工具 By Alan</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            gap: 8px;
-        }
-        
-        .title-main {
-            font-size: 28px;
-        }
-        
-        .title-by {
-            font-size: 18px;
-            color: #666;
-            font-weight: 500;
-        }
-        
-        .section-title {
-            font-size: 22px; /* 增大副标题字体 */
-            color: #4a90e2;
-            margin: 25px 0 15px 0;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #eaeaea;
-        }
-        
-        .country-title {
-            margin-top: 35px; /* 增加与上面模块的间距 */
-        }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
-        }
-        
-        .date-input-container {
-            position: relative;
-            display: flex;
-        }
-        
-        .date-input-container input[type="text"] {
-            flex: 1;
-            padding-right: 50px;
-        }
-        
-        .date-input-container input[type="date"] {
-            position: absolute;
-            right: 0;
-            width: 50px;
-            height: 100%;
-            opacity: 0.01;
-            cursor: pointer;
-            z-index: 2;
-        }
-        
-        .date-input-container::after {
-            content: "📅";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            font-size: 18px;
-            z-index: 1;
-        }
-        
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus {
-            border-color: #4a90e2;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-        }
-        
-        .result-group {
-            margin-top: 30px;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #4a90e2;
-        }
-        
-        .result-label {
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        
-        .result {
-            font-size: 22px;
-            color: #333;
-            font-weight: 600;
-        }
-        
-        .calculate-btn {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        
-        .calculate-btn:hover {
-            background-color: #3a7bc8;
-        }
-        
-        .error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .example {
-            background-color: #f0f7ff;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #555;
-        }
-        
-        /* 快捷天数按钮样式 */
-        .quick-days {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .quick-day-btn {
-            flex: 1;
-            background-color: #7bb0ee;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-weight: 600;
-        }
-        
-        .quick-day-btn:hover {
-            background-color: #6ba0de;
-        }
-        
-        .quick-day-btn.active {
-            background-color: #5b90ce;
-            box-shadow: 0 0 0 2px rgba(91, 144, 206, 0.3);
-        }
-        
-        .manual-input-container {
-            margin-top: 10px;
-        }
-        
-        .manual-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-            display: block;
-        }
-        
-        .manual-input {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .manual-input input {
-            flex: 1;
-        }
-        
-        .manual-input button {
-            flex: 0 0 auto;
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 6px;
-            padding: 0 20px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .manual-input button:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .date-hint {
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
-        }
-        
-        .today-btn {
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 5px;
-            transition: background-color 0.2s;
-        }
-        
-        .today-btn:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            color: #777;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-        
-        .copyright {
-            font-weight: 500;
-            color: #555;
-        }
-        
-        /* 免签国家查询样式 */
-        .country-search-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .country-search-container input {
-            flex: 1;
-        }
-        
-        .country-search-container button {
-            flex: 0 0 auto;
-            background-color: #7bb0ee;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 0 20px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .country-search-container button:hover {
-            background-color: #6ba0de;
-        }
-        
-        .show-all-container {
-            text-align: right;
-            margin-bottom: 15px;
-        }
-        
-        .show-all-countries {
-            background-color: #f0f0f0;
-            color: #333;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .show-all-countries:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .country-results {
-            margin-top: 15px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #eaeaea;
-            border-radius: 6px;
-            padding: 10px;
-        }
-        
-        .country-results-header {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .country-item {
-            padding: 10px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .country-item:last-child {
-            border-bottom: none;
-        }
-        
-        .country-name {
-            font-weight: 500;
-        }
-        
-        .country-code {
-            color: #4a90e2;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f7ff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            border: 1px solid #c5d9f1;
-            font-size: 15px;
-        }
-        
-        .no-results {
-            text-align: center;
-            color: #888;
-            padding: 20px;
-        }
-        
-        .result-details {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>前台快捷工具 By Alan</title>
+<style>
+    :root { --primary: #4a90e2; --hover: #3a7bc8; --bg: #f5f5f5; --txt: #333; --txt-sec: #666; --err: #e74c3c; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .container { background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 30px; width: 100%; max-width: 600px; }
+    h1 { color: var(--txt); text-align: center; margin-bottom: 25px; font-weight: 600; display: flex; justify-content: center; align-items: baseline; gap: 8px; }
+    .title-main { font-size: 28px; }
+    .title-by { font-size: 18px; color: var(--txt-sec); font-weight: 500; }
+    .section-title { font-size: 22px; color: var(--primary); margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #eaeaea; }
+    .country-title { margin-top: 35px; }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
+    .date-input-container { position: relative; display: flex; }
+    .date-input-container input[type="text"] { flex: 1; padding-right: 50px; }
+    .date-input-container input[type="date"] { position: absolute; right: 0; width: 50px; height: 100%; opacity: 0; cursor: pointer; z-index: 2; }
+    .date-input-container::after { content: " 📅 "; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 18px; z-index: 1; }
+    input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; transition: 0.3s; }
+    input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); }
+    .result-group { margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
+    .result-label { font-weight: 500; color: #555; margin-bottom: 10px; }
+    .result { font-size: 22px; color: var(--txt); font-weight: 600; }
+    .result-details, .date-hint, .error, .manual-label { font-size: 14px; color: var(--txt-sec); }
+    .date-hint { font-size: 12px; color: #888; margin-top: 5px; }
+    .error { color: var(--err); display: none; margin-top: 5px; }
+    .example { background: #f0f7ff; padding: 15px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #555; }
+    
+    /* 按钮通用样式 */
+    button { cursor: pointer; border: none; border-radius: 6px; transition: 0.2s; font-size: 16px; }
+    .calculate-btn, .search-btn { background: var(--primary); color: white; padding: 12px 20px; width: 100%; margin-top: 10px; }
+    .calculate-btn:hover, .search-btn:hover { background: var(--hover); }
+    
+    .quick-days { display: flex; gap: 8px; margin-bottom: 15px; }
+    .quick-day-btn { flex: 1; background: #7bb0ee; color: white; padding: 12px 5px; font-weight: 600; }
+    .quick-day-btn:hover { background: #6ba0de; }
+    .quick-day-btn.active { background: #5b90ce; box-shadow: 0 0 0 2px rgba(91, 144, 206, 0.3); }
+    
+    .manual-input-container { margin-top: 10px; }
+    .manual-input, .country-search-container { display: flex; gap: 10px; }
+    .manual-input input, .country-search-container input { flex: 1; }
+    .manual-input button, .country-search-container button, .today-btn, .show-all-countries { flex: 0 0 auto; background: #f0f0f0; color: #333; }
+    .country-search-container button { background: #7bb0ee; color: white; padding: 0 20px; }
+    .country-search-container button:hover { background: #6ba0de; }
+    .manual-input button { padding: 0 20px; }
+    .today-btn { padding: 6px 10px; font-size: 12px; margin-top: 5px; }
+    .show-all-container { text-align: right; margin-bottom: 15px; }
+    .show-all-countries { padding: 6px 12px; font-size: 13px; }
+    .manual-input button:hover, .today-btn:hover, .show-all-countries:hover { background: #e0e0e0; }
+
+    .country-results { margin-top: 15px; max-height: 300px; overflow-y: auto; border: 1px solid #eaeaea; border-radius: 6px; padding: 10px; }
+    .country-results-header { font-size: 14px; color: var(--txt-sec); margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #f0f0f0; }
+    .country-item { padding: 10px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+    .country-item:last-child { border-bottom: none; }
+    .country-name { font-weight: 500; }
+    .country-code { color: var(--primary); background: #f0f7ff; padding: 4px 8px; border-radius: 4px; font-weight: 600; border: 1px solid #c5d9f1; font-size: 15px; }
+    .no-results { text-align: center; color: #888; padding: 20px; }
+    .footer { text-align: center; margin-top: 25px; color: #777; font-size: 14px; border-top: 1px solid #eee; padding-top: 15px; }
+    .copyright { font-weight: 500; color: #555; }
+</style>
 </head>
 <body>
-    <!-- 主容器 -->
-    <div class="container">
-        <h1>
-            <span class="title-main">前台快捷工具</span>
-            <span class="title-by">By Alan</span>
-        </h1>
-        
-        <!-- 日期计算部分 -->
-        <div class="section-title">入境有效期计算</div>
-        
-        <div class="input-group">
-            <label for="startDate">入境日期</label>
-            <div class="date-input-container">
-                <input type="text" id="startDate" placeholder="如：2023/10/01 或 2023-10-01">
-                <input type="date" id="startDatePicker" class="date-selector">
-            </div>
-            <div class="date-hint">支持格式：YYYY/MM/DD, YYYY-MM-DD, YYYY年MM月DD日</div>
-            <button class="today-btn" id="todayBtn">设为今天</button>
-            <div class="error" id="dateError">请输入有效的日期</div>
+<div class="container">
+    <h1><span class="title-main">前台快捷工具</span><span class="title-by">By Alan</span></h1>
+    
+    <div class="section-title">入境有效期计算</div>
+    <div class="input-group">
+        <label for="startDate">入境日期</label>
+        <div class="date-input-container">
+            <input type="text" id="startDate" placeholder="如：2023/10/01 或 2023-10-01">
+            <input type="date" id="startDatePicker">
         </div>
-        
-        <div class="input-group">
-            <label for="daysToAdd">停留天数</label>
-            
-            <!-- 快捷天数按钮 -->
-            <div class="quick-days">
-                <button class="quick-day-btn" data-days="30">30天</button>
-                <button class="quick-day-btn" data-days="60">60天</button>
-                <button class="quick-day-btn" data-days="90">90天</button>
-                <button class="quick-day-btn" data-days="120">120天</button>
-                <button class="quick-day-btn" data-days="180">180天</button>
-            </div>
-            
-            <!-- 手动输入区域 -->
-            <div class="manual-input-container">
-                <span class="manual-label">手动输入</span>
-                <div class="manual-input">
-                    <input type="number" id="daysToAdd" min="1" placeholder="输入其他天数">
-                    <button id="manualCalculateBtn">计算</button>
-                </div>
-            </div>
-            
-            <div class="error" id="daysError">请输入有效的天数（≥1）</div>
-        </div>
-        
-        <div class="result-group">
-            <div class="result-label">计算结果</div>
-            <div class="result" id="result">请输入入境日期和停留天数进行计算</div>
-            <div class="result-details" id="resultDetails"></div>
-        </div>
-        
-        <div class="example">
-            <strong>示例：</strong><br>
-            入境日期：2023/10/01，停留天数：30<br>
-            计算结果：2023/10/31（有效期至）
-        </div>
-        
-        <!-- 免签国家查询部分 -->
-        <div class="section-title country-title">免签国家查询（77）</div>
-        
-        <!-- 搜索框和查找按钮作为主要功能 -->
-        <div class="country-search-container">
-            <input type="text" id="countrySearch" placeholder="输入国家名称或代码，如：泰国 或 THA">
-            <button id="searchBtn">查找</button>
-        </div>
-        
-        <!-- 显示全部按钮作为附属功能 -->
-        <div class="show-all-container">
-            <button class="show-all-countries" id="showAllBtn">显示全部免签国家</button>
-        </div>
-        
-        <div class="country-results" id="countryResults">
-            <div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>
-        </div>
-        
-        <div class="footer">
-            <div class="copyright">上海和平饭店©️2025</div>
-        </div>
+        <div class="date-hint">支持格式：YYYY/MM/DD, YYYY-MM-DD, YYYY年MM月DD日</div>
+        <button class="today-btn" id="todayBtn">设为今天</button>
+        <div class="error" id="dateError">请输入有效的日期</div>
     </div>
+    
+    <div class="input-group">
+        <label for="daysToAdd">停留天数</label>
+        <div class="quick-days">
+            <button class="quick-day-btn" data-days="30">30天</button>
+            <button class="quick-day-btn" data-days="60">60天</button>
+            <button class="quick-day-btn" data-days="90">90天</button>
+            <button class="quick-day-btn" data-days="120">120天</button>
+            <button class="quick-day-btn" data-days="180">180天</button>
+        </div>
+        <div class="manual-input-container">
+            <span class="manual-label">手动输入</span>
+            <div class="manual-input">
+                <input type="number" id="daysToAdd" min="1" placeholder="输入其他天数">
+                <button id="manualCalculateBtn">计算</button>
+            </div>
+        </div>
+        <div class="error" id="daysError">请输入有效的天数（≥1）</div>
+    </div>
+    
+    <div class="result-group">
+        <div class="result-label">计算结果</div>
+        <div class="result" id="result">请输入入境日期和停留天数进行计算</div>
+        <div class="result-details" id="resultDetails"></div>
+    </div>
+    
+    <div class="example">
+        <strong>示例：</strong><br>入境日期：2023/10/01，停留天数：30<br>计算结果：2023/10/31（有效期至）
+    </div>
+    
+    <div class="section-title country-title">免签国家查询（77+2）</div>
+    <div class="country-search-container">
+        <input type="text" id="countrySearch" placeholder="输入国家名称或代码，如：泰国 或 THA">
+        <button id="searchBtn">查找</button>
+    </div>
+    <div class="show-all-container">
+        <button class="show-all-countries" id="showAllBtn">显示全部免签国家</button>
+    </div>
+    <div class="country-results" id="countryResults">
+        <div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>
+    </div>
+    
+    <div class="footer">
+        <div class="copyright">上海和平饭店©️2025</div>
+    </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 日期计算相关元素
-            const startDateInput = document.getElementById('startDate');
-            const startDatePicker = document.getElementById('startDatePicker');
-            const daysToAddInput = document.getElementById('daysToAdd');
-            const manualCalculateBtn = document.getElementById('manualCalculateBtn');
-            const resultDiv = document.getElementById('result');
-            const resultDetails = document.getElementById('resultDetails');
-            const dateError = document.getElementById('dateError');
-            const daysError = document.getElementById('daysError');
-            const quickDayBtns = document.querySelectorAll('.quick-day-btn');
-            const todayBtn = document.getElementById('todayBtn');
-            
-            // 国家查询相关元素
-            const countrySearchInput = document.getElementById('countrySearch');
-            const searchBtn = document.getElementById('searchBtn');
-            const showAllBtn = document.getElementById('showAllBtn');
-            const countryResults = document.getElementById('countryResults');
-            
-            // 免签国家数据库
-            const countries = [
-                { name: "文莱", code: "BRN" },
-                { name: "法国", code: "FRA" },
-                { name: "德国", code: "DEU" },
-                { name: "意大利", code: "ITA" },
-                { name: "西班牙", code: "ESP" },
-                { name: "荷兰", code: "NLD" },
-                { name: "瑞士", code: "CHE" },
-                { name: "爱尔兰", code: "IRL" },
-                { name: "匈牙利", code: "HUN" },
-                { name: "奥地利", code: "AUT" },
-                { name: "比利时", code: "BEL" },
-                { name: "卢森堡", code: "LUX" },
-                { name: "新西兰", code: "NZL" },
-                { name: "澳大利亚", code: "AUS" },
-                { name: "波兰", code: "POL" },
-                { name: "葡萄牙", code: "PRT" },
-                { name: "希腊", code: "GRC" },
-                { name: "塞浦路斯", code: "CYP" },
-                { name: "斯洛文尼亚", code: "SVN" },
-                { name: "斯洛伐克", code: "SVK" },
-                { name: "挪威", code: "NOR" },
-                { name: "芬兰", code: "FIN" },
-                { name: "丹麦", code: "DNK" },
-                { name: "冰岛", code: "ISL" },
-                { name: "安道尔", code: "AND" },
-                { name: "摩纳哥", code: "MCO" },
-                { name: "列支敦士登", code: "LIE" },
-                { name: "韩国", code: "KOR" },
-                { name: "保加利亚", code: "BGR" },
-                { name: "罗马尼亚", code: "ROU" },
-                { name: "克罗地亚", code: "HRV" },
-                { name: "黑山", code: "MNE" },
-                { name: "北马其顿", code: "MKD" },
-                { name: "马耳他", code: "MLT" },
-                { name: "爱沙尼亚", code: "EST" },
-                { name: "拉脱维亚", code: "LVA" },
-                { name: "日本", code: "JPN" },
-                { name: "巴西", code: "BRA" },
-                { name: "阿根廷", code: "ARG" },
-                { name: "智利", code: "CHL" },
-                { name: "秘鲁", code: "PER" },
-                { name: "乌拉圭", code: "URY" },
-                { name: "沙特", code: "SAU" },
-                { name: "阿曼", code: "OMN" },
-                { name: "科威特", code: "KWT" },
-                { name: "巴林", code: "BHR" },
-                { name: "阿尔巴尼亚", code: "ALB" },
-                { name: "阿联酋", code: "ARE" },
-                { name: "安提瓜和巴布达", code: "ATG" },
-                { name: "巴巴多斯", code: "BRB" },
-                { name: "巴哈马", code: "BHS" },
-                { name: "白俄罗斯", code: "BLR" },
-                { name: "波黑", code: "BIH" },
-                { name: "多米尼克", code: "DMA" },
-                { name: "厄瓜多尔", code: "ECU" },
-                { name: "斐济", code: "FJI" },
-                { name: "格林纳达", code: "GRD" },
-                { name: "格鲁吉亚", code: "GEO" },
-                { name: "哈萨克斯坦", code: "KAZ" },
-                { name: "卡塔尔", code: "QAT" },
-                { name: "马尔代夫", code: "MDV" },
-                { name: "毛里求斯", code: "MUS" },
-                { name: "萨摩亚", code: "WSM" },
-                { name: "塞尔维亚", code: "SRB" },
-                { name: "塞舌尔", code: "SYC" },
-                { name: "圣马力诺", code: "SMR" },
-                { name: "苏里南", code: "SUR" },
-                { name: "所罗门群岛", code: "SLB" },
-                { name: "泰国", code: "THA" },
-                { name: "汤加", code: "TON" },
-                { name: "乌兹别克斯坦", code: "UZB" },
-                { name: "新加坡", code: "SGP" },
-                { name: "亚美尼亚", code: "ARM" },
-                { name: "阿塞拜疆", code: "AZE" },
-                { name: "马来西亚", code: "MYS" },
-                { name: "瑞典", code: "SWE" },
-                { name: "俄罗斯", code: "RUS" }
-            ];
-            
-            // 日期计算变量
-            let selectedQuickBtn = null;
-            
-            // 设置默认日期为今天
-            function setTodayDate() {
-                const currentDate = new Date();
-                const formattedDate = formatDate(currentDate, 'slash');
-                startDateInput.value = formattedDate;
-                startDatePicker.value = currentDate.toISOString().split('T')[0];
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const $ = id => document.getElementById(id);
+    const els = {
+        sDate: $('startDate'), sPicker: $('startDatePicker'), days: $('daysToAdd'),
+        calcBtn: $('manualCalculateBtn'), res: $('result'), resDet: $('resultDetails'),
+        dErr: $('dateError'), dayErr: $('daysError'), today: $('todayBtn'),
+        search: $('countrySearch'), sBtn: $('searchBtn'), showAll: $('showAllBtn'),
+        cRes: $('countryResults'), qBtns: document.querySelectorAll('.quick-day-btn')
+    };
+    
+    // 更新后的国家数据，追加了朝鲜和蒙古
+    const countryData = "文莱,BRN|法国,FRA|德国,DEU|意大利,ITA|西班牙,ESP|荷兰,NLD|瑞士,CHE|爱尔兰,IRL|匈牙利,HUN|奥地利,AUT|比利时,BEL|卢森堡,LUX|新西兰,NZL|澳大利亚,AUS|波兰,POL|葡萄牙,PRT|希腊,GRC|塞浦路斯,CYP|斯洛文尼亚,SVN|斯洛伐克,SVK|挪威,NOR|芬兰,FIN|丹麦,DNK|冰岛,ISL|安道尔,AND|摩纳哥,MCO|列支敦士登,LIE|韩国,KOR|保加利亚,BGR|罗马尼亚,ROU|克罗地亚,HRV|黑山,MNE|北马其顿,MKD|马耳他,MLT|爱沙尼亚,EST|拉脱维亚,LVA|日本,JPN|巴西,BRA|阿根廷,ARG|智利,CHL|秘鲁,PER|乌拉圭,URY|沙特,SAU|阿曼,OMN|科威特,KWT|巴林,BHR|阿尔巴尼亚,ALB|阿联酋,ARE|安提瓜和巴布达,ATG|巴巴多斯,BRB|巴哈马,BHS|白俄罗斯,BLR|波黑,BIH|多米尼克,DMA|厄瓜多尔,ECU|斐济,FJI|格林纳达,GRD|格鲁吉亚,GEO|哈萨克斯坦,KAZ|卡塔尔,QAT|马尔代夫,MDV|毛里求斯,MUS|萨摩亚,WSM|塞尔维亚,SRB|塞舌尔,SYC|圣马力诺,SMR|苏里南,SUR|所罗门群岛,SLB|泰国,THA|汤加,TON|乌兹别克斯坦,UZB|新加坡,SGP|亚美尼亚,ARM|阿塞拜疆,AZE|马来西亚,MYS|瑞典,SWE|俄罗斯,RUS|朝鲜（因公普通护照）,PRK|蒙古（因公普通护照）,MNG";
+    const countries = countryData.split('|').map(s => { const [name, code] = s.split(','); return { name, code }; });
+
+    // 日期工具
+    const fmt = (d, type = '/') => {
+        const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), da = String(d.getDate()).padStart(2,'0');
+        return type === '/' ? `${y}/${m}/${da}` : `${y}-${m}-${da}`;
+    };
+    
+    const parse = (str) => {
+        if(!str) return null;
+        // 统一格式：将年月日、横杠都替换为斜杠，然后解析
+        const clean = str.replace(/[年月日-]/g, '/');
+        const d = new Date(clean);
+        return isNaN(d.getTime()) ? null : d;
+    };
+
+    const setToday = () => {
+        const now = new Date();
+        els.sDate.value = fmt(now);
+        els.sPicker.value = fmt(now, '-');
+    };
+    
+    const clearQuick = () => els.qBtns.forEach(b => b.classList.remove('active'));
+
+    const calc = () => {
+        els.dErr.style.display = els.dayErr.style.display = 'none';
+        const d = parse(els.sDate.value);
+        const days = parseInt(els.days.value);
+        
+        if (!d) return els.dErr.style.display = 'block';
+        if (isNaN(days) || days < 1) return els.dayErr.style.display = 'block';
+
+        const newDate = new Date(d);
+        newDate.setDate(d.getDate() + days);
+        els.res.innerHTML = `<div>${fmt(newDate)}</div>`;
+        els.resDet.innerHTML = `<div>（有效期至，从 ${fmt(d)} 起算 ${days} 天）</div>`;
+    };
+
+    // 事件监听
+    setToday();
+    els.today.addEventListener('click', setToday);
+    
+    els.qBtns.forEach(btn => btn.addEventListener('click', function() {
+        clearQuick();
+        this.classList.add('active');
+        els.days.value = this.dataset.days;
+        calc();
+    }));
+
+    els.sPicker.addEventListener('change', function() { els.sDate.value = fmt(new Date(this.value)); });
+    els.sDate.addEventListener('change', function() { const d = parse(this.value); if(d) els.sPicker.value = fmt(d, '-'); });
+    
+    [els.calcBtn, els.days].forEach(el => {
+        el.addEventListener(el === els.days ? 'keypress' : 'click', e => {
+            if (e.type === 'click' || e.key === 'Enter') {
+                clearQuick();
+                calc();
             }
-            
-            // 日期格式化函数
-            function formatDate(date, format = 'slash') {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                
-                if (format === 'slash') {
-                    return `${year}/${month}/${day}`;
-                } else {
-                    return `${year}-${month}-${day}`;
-                }
-            }
-            
-            // 初始化计数显示
-            setTodayDate();
-            
-            // 设置今天按钮点击事件
-            todayBtn.addEventListener('click', setTodayDate);
-            
-            // 快捷按钮点击事件
-            quickDayBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // 移除之前选中的按钮的active类
-                    if (selectedQuickBtn) {
-                        selectedQuickBtn.classList.remove('active');
-                    }
-                    
-                    // 设置当前按钮为选中状态
-                    this.classList.add('active');
-                    selectedQuickBtn = this;
-                    
-                    // 获取天数并计算
-                    const days = parseInt(this.getAttribute('data-days'));
-                    daysToAddInput.value = days;
-                    calculateDate();
-                });
-            });
-            
-            // 日期选择器变化事件
-            startDatePicker.addEventListener('change', function() {
-                const selectedDate = new Date(this.value);
-                const formattedDate = formatDate(selectedDate, 'slash');
-                startDateInput.value = formattedDate;
-            });
-            
-            // 手动输入日期变化事件
-            startDateInput.addEventListener('change', function() {
-                const date = parseDate(this.value);
-                if (date && !isNaN(date.getTime())) {
-                    startDatePicker.value = formatDate(date, 'dash');
-                }
-            });
-            
-            // 手动计算按钮点击事件
-            manualCalculateBtn.addEventListener('click', function() {
-                // 移除快捷按钮的选中状态
-                if (selectedQuickBtn) {
-                    selectedQuickBtn.classList.remove('active');
-                    selectedQuickBtn = null;
-                }
-                calculateDate();
-            });
-            
-            // 手动输入框回车触发计算
-            daysToAddInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    // 移除快捷按钮的选中状态
-                    if (selectedQuickBtn) {
-                        selectedQuickBtn.classList.remove('active');
-                        selectedQuickBtn = null;
-                    }
-                    calculateDate();
-                }
-            });
-            
-            // 日期解析函数 - 支持多种格式
-            function parseDate(dateString) {
-                if (!dateString) return null;
-                
-                // 尝试直接解析
-                let date = new Date(dateString);
-                if (!isNaN(date.getTime())) {
-                    return date;
-                }
-                
-                // 尝试处理中文格式
-                const chinesePattern = /(\d{4})年(\d{1,2})月(\d{1,2})日/;
-                const chineseMatch = dateString.match(chinesePattern);
-                if (chineseMatch) {
-                    const year = parseInt(chineseMatch[1]);
-                    const month = parseInt(chineseMatch[2]) - 1; // 月份从0开始
-                    const day = parseInt(chineseMatch[3]);
-                    date = new Date(year, month, day);
-                    if (!isNaN(date.getTime())) {
-                        return date;
-                    }
-                }
-                
-                // 尝试处理YYYY-MM-DD或YYYY/MM/DD格式
-                const standardPattern = /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/;
-                const standardMatch = dateString.match(standardPattern);
-                if (standardMatch) {
-                    const year = parseInt(standardMatch[1]);
-                    const month = parseInt(standardMatch[2]) - 1; // 月份从0开始
-                    const day = parseInt(standardMatch[3]);
-                    date = new Date(year, month, day);
-                    if (!isNaN(date.getTime())) {
-                        return date;
-                    }
-                }
-                
-                return null;
-            }
-            
-            // 计算日期函数
-            function calculateDate() {
-                // 重置错误信息
-                dateError.style.display = 'none';
-                daysError.style.display = 'none';
-                
-                // 获取输入值
-                const startDateValue = startDateInput.value;
-                const daysToAddValue = parseInt(daysToAddInput.value);
-                
-                // 验证输入
-                let isValid = true;
-                
-                const startDate = parseDate(startDateValue);
-                if (!startDate || isNaN(startDate.getTime())) {
-                    dateError.style.display = 'block';
-                    isValid = false;
-                }
-                
-                if (isNaN(daysToAddValue) || daysToAddValue < 1) {
-                    daysError.style.display = 'block';
-                    isValid = false;
-                }
-                
-                if (!isValid) {
-                    resultDiv.textContent = '请修正输入错误';
-                    resultDetails.textContent = '';
-                    return;
-                }
-                
-                // 计算新日期（停留天数对应到第N+1天的日期）
-                const newDate = new Date(startDate);
-                newDate.setDate(startDate.getDate() + daysToAddValue);
-                
-                // 格式化日期显示
-                const formattedNewDate = formatDate(newDate, 'slash');
-                
-                // 显示结果
-                resultDiv.innerHTML = `<div>${formattedNewDate}</div>`;
-                
-                // 显示详细信息
-                resultDetails.innerHTML = `
-                    <div>（有效期至，从 ${formatDate(startDate, 'slash')} 起算 ${daysToAddValue} 天）</div>
-                `;
-            }
-            
-            // 显示国家列表函数
-            function displayCountries(countryList) {
-                if (countryList.length === 0) {
-                    countryResults.innerHTML = '<div class="country-results-header">以下是搜索到的免签国家：</div><div class="no-results">未找到匹配的国家</div>';
-                } else {
-                    let resultsHTML = '<div class="country-results-header">以下是搜索到的免签国家：</div>';
-                    resultsHTML += countryList.map(country => 
-                        `<div class="country-item">
-                            <span class="country-name">${country.name}</span>
-                            <span class="country-code">${country.code}</span>
-                        </div>`
-                    ).join('');
-                    countryResults.innerHTML = resultsHTML;
-                }
-            }
-            
-            // 国家查询功能
-            function searchCountries() {
-                const searchTerm = countrySearchInput.value.trim().toLowerCase();
-                
-                if (!searchTerm) {
-                    countryResults.innerHTML = '<div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>';
-                    return;
-                }
-                
-                // 搜索匹配的国家
-                const matchedCountries = countries.filter(country => 
-                    country.name.toLowerCase().includes(searchTerm) || 
-                    country.code.toLowerCase().includes(searchTerm)
-                );
-                
-                // 显示结果
-                displayCountries(matchedCountries);
-            }
-            
-            // 显示全部国家
-            function showAllCountries() {
-                displayCountries(countries);
-            }
-            
-            // 搜索按钮点击事件
-            searchBtn.addEventListener('click', searchCountries);
-            
-            // 显示全部按钮点击事件
-            showAllBtn.addEventListener('click', showAllCountries);
-            
-            // 搜索框回车事件
-            countrySearchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchCountries();
-                }
-            });
         });
-    </script>
+    });
+
+    // 国家查询逻辑
+    const renderCountries = list => {
+        if (!list.length) return els.cRes.innerHTML = '<div class="country-results-header">以下是搜索到的免签国家：</div><div class="no-results">未找到匹配的国家</div>';
+        const html = list.map(c => `<div class="country-item"><span class="country-name">${c.name}</span><span class="country-code">${c.code}</span></div>`).join('');
+        els.cRes.innerHTML = `<div class="country-results-header">以下是搜索到的免签国家：</div>${html}`;
+    };
+
+    const search = () => {
+        const term = els.search.value.trim().toLowerCase();
+        if (!term) return els.cRes.innerHTML = '<div class="country-results-header">请输入关键词进行查询或点击"显示全部免签国家"</div>';
+        renderCountries(countries.filter(c => c.name.includes(term) || c.code.toLowerCase().includes(term)));
+    };
+
+    els.sBtn.addEventListener('click', search);
+    els.showAll.addEventListener('click', () => renderCountries(countries));
+    els.search.addEventListener('keypress', e => e.key === 'Enter' && search());
+});
+</script>
 </body>
 </html>
